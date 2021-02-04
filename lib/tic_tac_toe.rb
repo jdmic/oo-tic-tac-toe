@@ -13,6 +13,7 @@ class TicTacToe
 
     def initialize 
         @board = Array.new(9, " ")
+        
     end
 
     def display_board
@@ -48,14 +49,14 @@ class TicTacToe
     end
 
     def turn
-        "Pick a spot between 1-9."
+        puts "Pick a spot between 1-9."
         input = gets.strip
         index = input_to_index(input)
         if valid_move?(index)
             token = current_player
             move(index, token)
         else
-            "invalid"
+            puts "invalid"
             turn
         end
         display_board
@@ -105,7 +106,7 @@ class TicTacToe
 
     def over?
         #binding.pry
-        draw? || won?.kind_of?(Array)
+        draw? || won?
     end
 
     def winner
