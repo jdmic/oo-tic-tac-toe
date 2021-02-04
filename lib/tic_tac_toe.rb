@@ -23,9 +23,8 @@ class TicTacToe
         puts " #{@board[6]} | #{@board[7]} | #{@board[8]} "
     end
 
-    def input_to_index(input)
-        input = input.to_i
-        index = input - 1
+    def input_to_index(number)
+        number.to_i - 1
     end
 
     def move(index, token="X")
@@ -33,35 +32,33 @@ class TicTacToe
     end 
 
     def position_taken?(index)
-        if @board[index] == " "|| @board[index] == nil||@board[index] == ""
-            false
-        else
-            true
-        end
+        @board[index] != " "
     end
 
     def valid_move?(index)
-        if index.between?(0, 8)
-            if !position_taken?(index)
-                true
-            end
+        index.between?(0, 8) && !position_taken?(index)
+    end
+
+    def current_player
+        if turn_count%2==0
+            "X"
         else
-            false
+            "O"
         end
     end
 
     def turn
-        puts "Pick a spot between 1-9."
-        current_player
-        input = gets
+        "Pick a spot between 1-9."
+        input = gets.strip
         index = input_to_index(input)
         if valid_move?(index)
-            move(index, token="X")
-            display_board
+            token = current_player
+            move(index, token)
         else
-            puts "invalid"
-            input = gets
+            "invalid"
+            turn
         end
+        display_board
     end
 
     def turn_count
@@ -74,20 +71,15 @@ class TicTacToe
         count
     end
 
-    def current_player
-        if turn_count%2==0
-            "X"
-        else
-            "O"
-        end
-    end
-
     def won?
+        
         WIN_COMBINATIONS.each do |combo|
+            #binding.pry
             first = combo[0]
             second = combo[1]
             third = combo[2]
             if @board[first]!=" "&&@board[second]!=" "&&@board[third]!=" "&&@board[first]==@board[second] && @board[second]==@board[third] 
+                #binding.pry
                 return combo
             end
         end
@@ -112,17 +104,12 @@ class TicTacToe
     end
 
     def over?
-        if full?
-            true
-        elsif won?.kind_of?(Array)
-            true
-        else
-            false
-        end
+        #binding.pry
+        draw? || won?.kind_of?(Array)
     end
 
     def winner
-        if won?.kind_of?(Array)
+        if won?
             move = current_player
             if move == "X"
                 return "O"
@@ -135,11 +122,12 @@ class TicTacToe
     end
 
     def play
-        until winner.kind_of?(String)
-             turn
-             over?
-             winner
-        end
-        
+        #binding.pry
+        turn until over?
+            if winner
+                puts "Congratulations #{winner}!"
+            else
+                puts "Cat's Game!"
+            end         
     end
 end
